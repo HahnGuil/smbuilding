@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.manager.smbuilding.domain.model.Role;
 import com.manager.smbuilding.domain.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TokenService {
@@ -22,14 +25,21 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
+            // Obtém as roles do usuário
+            List<String> roles = user.getRoles().stream()
+                    .map(Role::getRoleName) // Supondo que Role tenha um método getRoleName()
+                    .collect(Collectors.toList());
+
+            // Cria o token JWT com as roles
             String token = JWT.create()
                     .withIssuer("SMBuilding")
                     .withSubject(user.getEmail())
+                    .withClaim("roles", roles) // Adiciona as roles ao token
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
 
             return token;
-        }catch (JWTCreationException e){
+        } catch (JWTCreationException e) {
             throw new RuntimeException("Error authenticating token");
         }
     }

@@ -2,7 +2,9 @@ package com.manager.smbuilding.domain.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -22,14 +24,30 @@ public class User {
     @Column(name = "PASSWORD", nullable = false)
     private String  password;
 
-    public User() {}
+    @Column(name = "CPF", nullable = false, unique = true)
+    private String cpf;
 
-    public User(UUID id, String name, String email, String password) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    @Column(name = "TOWER")
+    private String tower;
+
+    @Column(name = "APARTMENT")
+    private String apartment;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "USER_ROLES", // Tabela de junção
+            joinColumns = @JoinColumn(name = "user_id"), // Coluna de junção para 'User'
+            inverseJoinColumns = @JoinColumn(name = "role_id") // Coluna de junção para 'Role'
+    )
+    private Set<Role> roles = new HashSet<>();
+
+    // Construtores, getters, setters e outros métodos...
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
+
+    public User() {}
 
     public UUID getId() {
         return id;
@@ -63,17 +81,60 @@ public class User {
         this.password = password;
     }
 
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getTower() {
+        return tower;
+    }
+
+    public void setTower(String tower) {
+        this.tower = tower;
+    }
+
+    public String getApartment() {
+        return apartment;
+    }
+
+    public void setApartment(String apartment) {
+        this.apartment = apartment;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public User(UUID id, String name, String email, String password, String cpf, String tower, String apartment, Set<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.cpf = cpf;
+        this.tower = tower;
+        this.apartment = apartment;
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(getId(), user.getId()) && Objects.equals(getName(), user.getName()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword());
+        return Objects.equals(getId(), user.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getEmail(), getPassword());
+        return Objects.hashCode(getId());
     }
 
     @Override
@@ -83,6 +144,11 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", tower='" + tower + '\'' +
+                ", apartment='" + apartment + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 }
+
