@@ -20,28 +20,28 @@ public class OpenApiDocumentationService {
 
     public OpenApiDocumentationService(OpenApiResource openApiResource) {
         this.openApiResource = openApiResource;
-        this.objectMapper = new ObjectMapper(); // Inicializa o ObjectMapper
+        this.objectMapper = new ObjectMapper();
     }
 
     public void saveOpenApiDocumentation() {
         try {
-            // Cria um HttpServletRequest simulado
+            // Create a simulated HttpServletRequest
             SimpleHttpServletRequest request = new SimpleHttpServletRequest();
 
-            // Gera o JSON da documentação OpenAPI
+            // Generate JSON from OpenAPI documentation
             byte[] jsonBytes = openApiResource.openapiJson(request, "/v3/api-docs", Locale.getDefault());
             String jsonDocs = new String(jsonBytes, StandardCharsets.UTF_8);
 
             // Formata o JSON para ser legível
-            Object jsonObject = objectMapper.readValue(jsonDocs, Object.class); // Converte a string JSON para um objeto
-            String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject); // Formata o JSON
+            Object jsonObject = objectMapper.readValue(jsonDocs, Object.class); // Convert JSON string to an object
+            String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject); // Format the JSON
 
-            // Cria a pasta "docs" se não existir
+            // Create the "docs" folder if it doesn't exist
             if (!Files.exists(Paths.get("docs"))) {
                 Files.createDirectories(Paths.get("docs"));
             }
 
-            // Salva o JSON formatado em um arquivo
+            // Save de JSON file
             FileWriter fileWriter = new FileWriter("docs/smb-api.json");
             fileWriter.write(prettyJson);
             fileWriter.close();

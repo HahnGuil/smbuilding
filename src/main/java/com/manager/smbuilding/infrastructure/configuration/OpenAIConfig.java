@@ -12,8 +12,8 @@ public class OpenAIConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Documentação da API")
+                        .title("API documentation")
                         .version("1.0")
-                        .description("Documentação automática dos endpoints da aplicação"));
+                        .description("Automatic documentation of application endpoints"));
     }
 }
