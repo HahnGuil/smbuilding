@@ -10,16 +10,15 @@ import com.manager.smbuilding.domain.repository.RoleRepository;
 import com.manager.smbuilding.domain.repository.UserRepository;
 import com.manager.smbuilding.infrastructure.security.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -49,7 +48,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO body) {
-        // Verifica se o email ou CPF já existe
+        // Verifica se o email ou CPF já existem
         Optional<User> userByEmail = this.userRepository.findByEmail(body.email());
         Optional<User> userByCpf = this.userRepository.findByCpf(body.cpf());
 
@@ -61,7 +60,7 @@ public class AuthController {
             throw new UserAlreadyExistsException("CPF já cadastrado. Por favor, faça login ou recupere sua senha.");
         }
 
-        // Cria o novo usuário
+        // Criação do usuário
         User newUser = new User();
         newUser.setName(body.name());
         newUser.setEmail(body.email());
@@ -77,7 +76,7 @@ public class AuthController {
 
         // Salva o usuário
         this.userRepository.save(newUser);
-        return ResponseEntity.ok("Usuário criado com sucesso!");
+        return ResponseEntity.ok(Map.of("message", "Usuário criado com sucesso!"));
     }
 
 
