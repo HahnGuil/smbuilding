@@ -3,10 +3,11 @@ package com.manager.smbuilding.application.excption;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class UserAlreadyExistsException extends RuntimeException {
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class InvalidCredentialsException extends RuntimeException{
 
-    public UserAlreadyExistsException(String message) {
+    public InvalidCredentialsException(String message) {
         super(message);
     }
+
 }
