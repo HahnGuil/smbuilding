@@ -1,7 +1,6 @@
 package com.manager.smbuilding.domain.model;
 
 import jakarta.persistence.*;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.Objects;
 import java.util.UUID;

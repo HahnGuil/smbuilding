@@ -22,6 +22,7 @@ public class SupplierService {
     public Supplier createSupplier(SupplierRequestDTO data){
 
         Supplier newSupplier = supplierMapper.toEntity(data);
+        supplierRepository.save(newSupplier);
         addressService.createAddress(data, newSupplier);
 
         return newSupplier;
