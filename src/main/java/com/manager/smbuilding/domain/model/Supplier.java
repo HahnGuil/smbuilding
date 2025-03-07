@@ -25,6 +25,10 @@ public class Supplier {
     @Column(name = "EMAIL")
     private String email;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address", referencedColumnName = "id")
+    private Address address;
+
     public Supplier() {}
 
     public Supplier(UUID id, String name, String cnpj, String phone, String email) {
@@ -75,6 +79,14 @@ public class Supplier {
         this.email = email;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,6 +108,7 @@ public class Supplier {
                 ", cnpj='" + cnpj + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
+                ", address=" + address +
                 '}';
     }
 }

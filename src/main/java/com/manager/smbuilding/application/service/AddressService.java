@@ -4,6 +4,7 @@ import com.manager.smbuilding.application.dto.request.SupplierRequestDTO;
 import com.manager.smbuilding.domain.model.Address;
 import com.manager.smbuilding.domain.model.Supplier;
 import com.manager.smbuilding.domain.repository.AddressRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,18 +19,29 @@ public class AddressService {
         this.addressRepository = addressRepository;
     }
 
-    public void createAddress(SupplierRequestDTO data, Supplier supplier) {
+    public Address createAddress(SupplierRequestDTO data) {
         Address address = new Address();
         address.setUf(data.uf());
         address.setCity(data.city());
         address.setStreet(data.street());
-        address.setSupplier(supplier);
+        return address;
+    }
+
+    public void updateAddress(UUID id, SupplierRequestDTO data) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado com o ID: " + id));
+
+        address.setUf(data.uf());
+        address.setCity(data.city());
+        address.setStreet(data.street());
         addressRepository.save(address);
     }
 
-    public Optional<Address> findSupplierById(UUID supplierId) {
+
+    public Optional<Address> getAddressBySupplierId(UUID supplierId) {
         return addressRepository.findSupplierById(supplierId);
     }
+
 
 
 }

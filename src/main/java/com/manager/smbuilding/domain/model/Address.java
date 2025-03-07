@@ -22,8 +22,7 @@ public class Address {
     @Column(name = "STREET",nullable = false)
     private String street;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy = "address")
     private Supplier supplier;
 
     public Address() {}
