@@ -51,7 +51,7 @@ public class SupplierController {
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponseDTO("Ocorreu um erro inesperado."));
+                    .body(new ErrorResponseDTO("An unexpected error has occurred"));
         }
     }
 
@@ -65,17 +65,17 @@ public class SupplierController {
 
             if (suppliers.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ErrorResponseDTO("Nenhum fornecedor encontrado com o nome: " + name));
+                        .body(new ErrorResponseDTO("No supplier found with name: " + name));
             }
             return ResponseEntity.ok(suppliers);
 
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponseDTO("Fornecedor não encontrado com o nome: " + name));
+                    .body(new ErrorResponseDTO("Supplier not found with name: " + name));
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponseDTO("Ocorreu um erro inesperado ao buscar fornecedores."));
+                    .body(new ErrorResponseDTO("An unexpected error occurred while searching for suppliers."));
         }
     }
 
@@ -88,12 +88,12 @@ public class SupplierController {
                 return ResponseEntity.ok(supplierName.get());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ErrorResponseDTO("Fornecedor não encontrado com o ID: " + id));
+                        .body(new ErrorResponseDTO("Supplier not found with ID: " + id));
             }
 
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponseDTO("Ocorreu um erro inesperado ao buscar o nome do fornecedor."));
+                    .body(new ErrorResponseDTO("An unexpected error occurred while fetching the vendor name."));
         }
     }
 
@@ -105,7 +105,7 @@ public class SupplierController {
             return ResponseEntity.ok(optionalSupplier.get());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponseDTO("Fornecedor não encontrado com o ID: " + id));
+                    .body(new ErrorResponseDTO("Supplier not found with ID: " + id));
         }
     }
 }
