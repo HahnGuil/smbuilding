@@ -3,7 +3,6 @@ package com.manager.smbuilding.domain.model;
 import jakarta.persistence.*;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "COST_CENTER")
