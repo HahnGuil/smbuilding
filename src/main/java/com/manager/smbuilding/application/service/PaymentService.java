@@ -4,14 +4,12 @@ import com.manager.smbuilding.application.dto.request.PaymentRequestDTO;
 import com.manager.smbuilding.domain.model.Payment;
 import com.manager.smbuilding.domain.model.enums.DocumentType;
 import com.manager.smbuilding.domain.repository.PaymentRepository;
-import com.manager.smbuilding.infrastructure.security.AuditorAwareImpl;
 import com.manager.smbuilding.infrastructure.service.GoogleDriveService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -21,15 +19,13 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final SupplierService supplierService;
     private final CenterCostService costCenterService;
-    private final AuditorAwareImpl auditorAware;
     private final GoogleDriveService googleDriveService;
 
 
-    public PaymentService(PaymentRepository paymentRepository, SupplierService supplierService, CenterCostService costCenterService, AuditorAwareImpl auditorAware, GoogleDriveService googleDriveService) {
+    public PaymentService(PaymentRepository paymentRepository, SupplierService supplierService, CenterCostService costCenterService, GoogleDriveService googleDriveService) {
         this.paymentRepository = paymentRepository;
         this.supplierService = supplierService;
         this.costCenterService = costCenterService;
-        this.auditorAware = auditorAware;
         this.googleDriveService = googleDriveService;
     }
 
@@ -109,9 +105,6 @@ public class PaymentService {
 
     }
 
-    protected String getAuditor(){
-        return auditorAware.getCurrentAuditor().orElse("User unknown");
-    }
 
     protected String uploadReceiptDocument(MultipartFile receiptDocument) throws IOException {
         File tempFile = File.createTempFile(Objects.requireNonNull(receiptDocument.getOriginalFilename()), null);
