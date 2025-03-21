@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/payment")
@@ -37,6 +38,21 @@ public class PaymentController {
 
         Payment payment = paymentService.createPayment(paymentRequestDTO);
         return ResponseEntity.ok(payment);
+    }
+
+    @PutMapping("/update-payment/{id}")
+    public ResponseEntity<Payment> updatePayment(
+            @PathVariable UUID id,
+            @RequestParam(value = "documentType", required = false) String documentType,
+            @RequestParam(value = "supplier", required = false) Long supplier,
+            @RequestParam(value = "costCenter", required = false) Long costCenter,
+            @RequestParam(value = "datePayment", required = false) LocalDate datePayment,
+            @RequestParam(value = "paymentAmount", required = false) Double paymentAmount,
+            @RequestParam(value = "receiptDocument", required = false) MultipartFile receiptDocument) throws IOException {
+
+        PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(documentType, supplier, costCenter, datePayment, paymentAmount, receiptDocument);
+        Payment updatedPayment = paymentService.updatePayment(id, paymentRequestDTO);
+        return ResponseEntity.ok(updatedPayment);
     }
 }
 

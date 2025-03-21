@@ -1,7 +1,9 @@
 package com.manager.smbuilding.application.service;
 
 import com.manager.smbuilding.application.dto.request.PaymentRequestDTO;
+import com.manager.smbuilding.domain.model.CostCenter;
 import com.manager.smbuilding.domain.model.Payment;
+import com.manager.smbuilding.domain.model.Supplier;
 import com.manager.smbuilding.domain.model.enums.DocumentType;
 import com.manager.smbuilding.domain.repository.PaymentRepository;
 import com.manager.smbuilding.infrastructure.service.GoogleDriveService;
@@ -66,17 +68,10 @@ public class PaymentService {
         updatePayment.setSupplier(supplierService.findById(paymentRequestDTO.supplier()));
         updatePayment.setReceiptDocument(newLinkUploadReceiptDocument);
 
-//        setAuditorToPayment(updatePayment, false);
-
-
-
-
-
         paymentRepository.save(updatePayment);
 
         return updatePayment;
     }
-
 
     protected String handleReceiptDocumentUpdate(Payment updatePayment, MultipartFile receiptDocument) throws IOException {
         String newLinkUploadReceiptDocument;
