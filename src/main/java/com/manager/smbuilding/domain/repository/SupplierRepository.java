@@ -10,10 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface SupplierRepository extends JpaRepository<Supplier, UUID> {
+public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
 
     @Query("SELECT s.id AS id, s.name AS name, s.cnpj AS cnpj, s.phone AS phone, s.email AS email, " +
@@ -23,8 +22,12 @@ public interface SupplierRepository extends JpaRepository<Supplier, UUID> {
     List<SupplierAddressProjection> findSupplierByName(String name);
 
     @Query("SELECT s.name FROM Supplier s WHERE s.id = :id")
-    Optional<String> findSupplierNameById(@Param("id") UUID id);
+    Optional<String> findSupplierNameById(@Param("id") Long id);
 
     @Query("SELECT s.name AS name, s.cnpj AS cnpj FROM Supplier s WHERE s.id = :id")
-    Optional<SupplierNameAndCnpjProjection> findSupplierNameAndCnpjById(@Param("id") UUID id);
+    Optional<SupplierNameAndCnpjProjection> findSupplierNameAndCnpjById(@Param("id") Long id);
+
+    @Query("SELECT s.name FROM Supplier s WHERE s.id = :id")
+    Optional<Supplier> findSupplierById(@Param("id") Long id);
+
 }

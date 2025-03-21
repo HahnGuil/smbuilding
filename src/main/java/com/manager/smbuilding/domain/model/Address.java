@@ -1,17 +1,18 @@
 package com.manager.smbuilding.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "ADDRESS")
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "STATE", nullable = false)
     private String uf;
@@ -23,11 +24,12 @@ public class Address {
     private String street;
 
     @OneToOne(mappedBy = "address")
+    @JsonIgnore
     private Supplier supplier;
 
     public Address() {}
 
-    public Address(UUID id, String uf, String city, String street, Supplier supplier) {
+    public Address(Long id, String uf, String city, String street, Supplier supplier) {
         this.id = id;
         this.uf = uf;
         this.city = city;
@@ -35,11 +37,11 @@ public class Address {
         this.supplier = supplier;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/supplier")
@@ -38,7 +37,7 @@ public class SupplierController {
 
     @PutMapping("/update-supplier/{id}")
     public ResponseEntity<?> updateSupplier(
-            @PathVariable UUID id,
+            @PathVariable Long id,
             @RequestBody @Valid SupplierRequestDTO data) {
 
         try {
@@ -80,7 +79,7 @@ public class SupplierController {
     }
 
     @GetMapping("/supplier-name/{id}")
-    public ResponseEntity<?> getSupplierNameById(@PathVariable UUID id) {
+    public ResponseEntity<?> getSupplierNameById(@PathVariable Long id) {
         try {
             Optional<String> supplierName = supplierService.getSupplierNameById(id);
 
@@ -98,7 +97,7 @@ public class SupplierController {
     }
 
     @GetMapping("/name-and-cnpj/{id}")
-    public ResponseEntity<?> getSupplierNameAndCnpj(@PathVariable UUID id) {
+    public ResponseEntity<?> getSupplierNameAndCnpj(@PathVariable Long id) {
         Optional<SupplierNameAndCnpjProjection> optionalSupplier = supplierService.findSupplierNameAndCnpjById(id);
 
         if (optionalSupplier.isPresent()) {

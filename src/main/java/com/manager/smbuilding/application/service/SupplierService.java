@@ -3,6 +3,7 @@ package com.manager.smbuilding.application.service;
 import com.manager.smbuilding.application.dto.request.SupplierRequestDTO;
 import com.manager.smbuilding.application.dto.response.SupplierResponseDTO;
 import com.manager.smbuilding.domain.model.Address;
+import com.manager.smbuilding.domain.model.CostCenter;
 import com.manager.smbuilding.domain.model.Supplier;
 import com.manager.smbuilding.domain.repository.SupplierRepository;
 import com.manager.smbuilding.infrastructure.persistence.projection.SupplierAddressProjection;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +37,7 @@ public class SupplierService {
         return supplierRepository.save(newSupplier);
     }
 
-    public SupplierResponseDTO updateSupplier(UUID id, SupplierRequestDTO data) {
+    public SupplierResponseDTO updateSupplier(Long id, SupplierRequestDTO data) {
         Supplier existingSupplier = supplierRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Fornecedor não encontrado com o ID: " + id));
 
@@ -82,12 +82,22 @@ public class SupplierService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<String> getSupplierNameById(UUID id) {
+    public Optional<String> getSupplierNameById(Long id) {
         return supplierRepository.findSupplierNameById(id);
     }
 
-    public Optional<SupplierNameAndCnpjProjection> findSupplierNameAndCnpjById(UUID id) {
+    public Optional<SupplierNameAndCnpjProjection> findSupplierNameAndCnpjById(Long id) {
         return supplierRepository.findSupplierNameAndCnpjById(id);
+    }
+
+    public Supplier getSupplier(Long supplierId) {
+        return supplierRepository.findSupplierById(supplierId)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+    }
+
+    public Supplier findById(Long id) {
+        return supplierRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
     }
 
 

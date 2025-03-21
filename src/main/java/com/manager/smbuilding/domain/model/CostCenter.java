@@ -22,6 +22,9 @@ public class CostCenter {
         this.costCenter = costCenter;
     }
 
+    public CostCenter(Long costCenter) {
+    }
+
     public Long getId() {
         return id;
     }

@@ -11,6 +11,4 @@ import java.util.Optional;
 @Repository
 public interface CostCenterRepository extends JpaRepository<CostCenter, Long> {
 
-    @Query("SELECT c.costCenter FROM CostCenter c WHERE c.id = :id")
-    Optional<CostCenter> findById(@Param("id") Long id);
 }

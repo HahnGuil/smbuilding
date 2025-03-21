@@ -11,8 +11,6 @@ import com.manager.smbuilding.domain.model.User;
 import com.manager.smbuilding.domain.repository.RoleRepository;
 import com.manager.smbuilding.domain.repository.UserRepository;
 import com.manager.smbuilding.infrastructure.security.TokenService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,15 +23,19 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final RoleRepository roleRepository;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
+
+    public AuthController(UserRepository userRepository, TokenService tokenService, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.tokenService = tokenService;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO body) {

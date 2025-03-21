@@ -1,17 +1,18 @@
 package com.manager.smbuilding.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "SUPPLIER")
 public class Supplier {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "NAME", nullable = false)
     private String name;
@@ -27,23 +28,25 @@ public class Supplier {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "address", referencedColumnName = "id")
+    @JsonIgnore
     private Address address;
 
     public Supplier() {}
 
-    public Supplier(UUID id, String name, String cnpj, String phone, String email) {
+    public Supplier(Long id, String name, String cnpj, String phone, String email, Address address) {
         this.id = id;
         this.name = name;
         this.cnpj = cnpj;
         this.phone = phone;
         this.email = email;
+        this.address = address;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -92,12 +95,12 @@ public class Supplier {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Supplier supplier = (Supplier) o;
-        return Objects.equals(getId(), supplier.getId());
+        return Objects.equals(id, supplier.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return Objects.hashCode(id);
     }
 
     @Override
