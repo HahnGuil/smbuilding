@@ -1,7 +1,7 @@
 package com.manager.smbuilding.presentation.controller;
 
 import com.manager.smbuilding.application.dto.request.PaymentRequestDTO;
-import com.manager.smbuilding.application.excption.EmptyFileException;
+import com.manager.smbuilding.application.exception.EmptyFileException;
 import com.manager.smbuilding.application.service.PaymentService;
 import com.manager.smbuilding.domain.model.Payment;
 import org.springframework.http.ResponseEntity;

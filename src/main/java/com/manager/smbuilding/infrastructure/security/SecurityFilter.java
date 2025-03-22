@@ -55,16 +55,13 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (email != null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                // Extrai as roles do token
                 DecodedJWT decodedJWT = JWT.decode(token);
                 List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
 
-                // Cria a lista de GrantedAuthority a partir das roles
                 List<SimpleGrantedAuthority> authorities = roles.stream()
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-                // Cria o Authentication com as roles
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

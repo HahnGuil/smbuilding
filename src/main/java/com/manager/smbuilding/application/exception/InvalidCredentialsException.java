@@ -1,4 +1,4 @@
-package com.manager.smbuilding.application.excption;
+package com.manager.smbuilding.application.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

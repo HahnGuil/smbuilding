@@ -1,6 +1,6 @@
 package com.manager.smbuilding.presentation.exception;
 
-import com.manager.smbuilding.application.excption.*;
+import com.manager.smbuilding.application.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -25,16 +25,14 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
-            // Obtém as roles do usuário
             List<String> roles = user.getRoles().stream()
-                    .map(Role::getRoleName) // Supondo que Role tenha um método getRoleName()
+                    .map(Role::getRoleName)
                     .collect(Collectors.toList());
 
-            // Cria o token JWT com as roles
             String token = JWT.create()
                     .withIssuer("SMBuilding")
                     .withSubject(user.getEmail())
-                    .withClaim("roles", roles) // Adiciona as roles ao token
+                    .withClaim("roles", roles)
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
 
