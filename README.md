@@ -43,6 +43,6 @@ Para resolver estes e outros problemas, apresento-lhes o **SMBuilding**. Uma fer
 ## 📌 Class Diagram
 Below you can find the class diagram for this project:
 
-![Class Diagram](https://www.mermaidchart.com/raw/a7260904-d54a-45dc-aeb4-af49555a6498?theme=light&version=v0.1&format=svg)
+![Class Diagram](https://www.mermaidchart.com/raw/f3397701-b2b5-4ea7-b370-b4644d1b42e4?theme=light&version=v0.1&format=svg)
 
 ---
