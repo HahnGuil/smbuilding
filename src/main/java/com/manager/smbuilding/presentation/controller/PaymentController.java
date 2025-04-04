@@ -29,7 +29,7 @@ public class PaymentController {
                                                  @RequestParam ("costCenter") Long costCenter,
                                                  @RequestParam ("datePayment") LocalDate datePayment,
                                                  @RequestParam ("paymentAmount") Double paymentAmout,
-                                                 @RequestParam (value = "receiptDocument", required = true) MultipartFile receiptDocumet) throws IOException {
+                                                 @RequestParam (value = "receiptDocument") MultipartFile receiptDocumet) throws IOException {
         validateAmountPrice(paymentAmout);
         validadeEmptyFile(receiptDocumet);
 
@@ -39,7 +39,7 @@ public class PaymentController {
         return ResponseEntity.ok(payment);
     }
 
-    public void validadeEmptyFile(MultipartFile receiptDocumet) throws IOException {
+    public void validadeEmptyFile(MultipartFile receiptDocumet){
         if(receiptDocumet.isEmpty()){
             throw new EmptyFileException("File cannot be empty");
         }
