@@ -1,6 +1,7 @@
 package com.manager.smbuilding.presentation.controller;
 
 import com.manager.smbuilding.application.dto.request.PaymentRequestDTO;
+import com.manager.smbuilding.application.exception.AmountOverPriceException;
 import com.manager.smbuilding.application.exception.EmptyFileException;
 import com.manager.smbuilding.application.service.PaymentService;
 import com.manager.smbuilding.domain.model.Payment;
@@ -29,15 +30,25 @@ public class PaymentController {
                                                  @RequestParam ("datePayment") LocalDate datePayment,
                                                  @RequestParam ("paymentAmount") Double paymentAmout,
                                                  @RequestParam (value = "receiptDocument", required = true) MultipartFile receiptDocumet) throws IOException {
+        validateAmountPrice(paymentAmout);
+        validadeEmptyFile(receiptDocumet);
 
         PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO(documentType, supplier, costCenter, datePayment, paymentAmout, receiptDocumet);
 
+        Payment payment = paymentService.createPayment(paymentRequestDTO);
+        return ResponseEntity.ok(payment);
+    }
+
+    public void validadeEmptyFile(MultipartFile receiptDocumet) throws IOException {
         if(receiptDocumet.isEmpty()){
             throw new EmptyFileException("File cannot be empty");
         }
+    }
 
-        Payment payment = paymentService.createPayment(paymentRequestDTO);
-        return ResponseEntity.ok(payment);
+    public void validateAmountPrice(Double paymentAmount){
+        if(paymentAmount >= 5001){
+            throw new AmountOverPriceException("Payment amount could not be over $5.000,00");
+        }
     }
 
     @PutMapping("/update-payment/{id}")

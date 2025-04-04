@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
     }
 
-
+    @ExceptionHandler(AmountOverPriceException.class)
+    public ResponseEntity<Map<String, String>> handleAmountOverPriceException(AmountOverPriceException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Amount over price");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
+    }
 
 }
