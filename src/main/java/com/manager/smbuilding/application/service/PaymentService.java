@@ -1,9 +1,8 @@
 package com.manager.smbuilding.application.service;
 
 import com.manager.smbuilding.application.dto.request.PaymentRequestDTO;
-import com.manager.smbuilding.domain.model.CostCenter;
+import com.manager.smbuilding.application.dto.response.PaymentResponseDTO;
 import com.manager.smbuilding.domain.model.Payment;
-import com.manager.smbuilding.domain.model.Supplier;
 import com.manager.smbuilding.domain.model.enums.DocumentType;
 import com.manager.smbuilding.domain.repository.PaymentRepository;
 import com.manager.smbuilding.infrastructure.service.GoogleDriveService;
@@ -12,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -33,25 +34,11 @@ public class PaymentService {
 
     public Payment createPayment(PaymentRequestDTO paymentRequestDTO) throws IOException {
         String uploadReceiptDocument = uploadReceiptDocument(paymentRequestDTO.receiptDocument());
-        Payment newPayment = toEntity(paymentRequestDTO, uploadReceiptDocument);
-
-        paymentRepository.save(newPayment);
-        return newPayment;
-    }
-
-
-    protected Payment toEntity(PaymentRequestDTO paymentRequestDTO, String linkReceiptDocument) {
         Payment payment = new Payment();
+        Payment newPayment = toEntity(paymentRequestDTO, payment,uploadReceiptDocument);
 
-        payment.setDocumentType(DocumentType.valueOf(paymentRequestDTO.documentType().toUpperCase()));
-        payment.setDatePayment(paymentRequestDTO.datePayment());
-        payment.setPaymentAmount(paymentRequestDTO.paymentAmount());
-        payment.setCostCenter(costCenterService.findById(paymentRequestDTO.costCenter()));
-        payment.setSupplier(supplierService.findById(paymentRequestDTO.supplier()));
-        payment.setReceiptDocument(linkReceiptDocument);
-
-        return payment;
-
+        paymentRepository.save(toEntity(paymentRequestDTO, payment,uploadReceiptDocument));
+        return newPayment;
     }
 
     public Payment updatePayment(UUID id, PaymentRequestDTO paymentRequestDTO) throws IOException {
@@ -60,18 +47,34 @@ public class PaymentService {
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
 
         String newLinkUploadReceiptDocument = handleReceiptDocumentUpdate(updatePayment, paymentRequestDTO.receiptDocument());
-
-        updatePayment.setDocumentType(DocumentType.valueOf(paymentRequestDTO.documentType().toUpperCase()));
-        updatePayment.setDatePayment(paymentRequestDTO.datePayment());
-        updatePayment.setPaymentAmount(paymentRequestDTO.paymentAmount());
-        updatePayment.setCostCenter(costCenterService.findById(paymentRequestDTO.costCenter()));
-        updatePayment.setSupplier(supplierService.findById(paymentRequestDTO.supplier()));
-        updatePayment.setReceiptDocument(newLinkUploadReceiptDocument);
+        toEntity(paymentRequestDTO, updatePayment, newLinkUploadReceiptDocument);
 
         paymentRepository.save(updatePayment);
-
         return updatePayment;
     }
+
+    protected Payment toEntity(PaymentRequestDTO paymentRequestDTO, Payment payment, String newLinkUploadReceiptDocument) {
+        payment.setDocumentType(DocumentType.valueOf(paymentRequestDTO.documentType().toUpperCase()));
+        payment.setDatePayment(paymentRequestDTO.datePayment());
+        payment.setPaymentAmount(paymentRequestDTO.paymentAmount());
+        payment.setCostCenter(costCenterService.findById(paymentRequestDTO.costCenter()));
+        payment.setSupplier(supplierService.findById(paymentRequestDTO.supplier()));
+        payment.setReceiptDocument(newLinkUploadReceiptDocument);
+
+        return payment;
+    }
+
+    private PaymentResponseDTO toDTO(Payment payment) {
+        return new PaymentResponseDTO(
+                payment.getDocumentType().name(),
+                payment.getSupplier().getName(),
+                payment.getCostCenter().getCostCenter(),
+                payment.getDatePayment(),
+                payment.getPaymentAmount(),
+                payment.getReceiptDocument()
+        );
+    }
+
 
     protected String handleReceiptDocumentUpdate(Payment updatePayment, MultipartFile receiptDocument) throws IOException {
         String newLinkUploadReceiptDocument;
@@ -93,14 +96,6 @@ public class PaymentService {
         }
     }
 
-    protected void findLinkReceiptDocument(String receiptDocument) throws IOException {
-        if(googleDriveService.deleteFileByLink(receiptDocument)) {
-            return;
-        };
-
-    }
-
-
     protected String uploadReceiptDocument(MultipartFile receiptDocument) throws IOException {
         File tempFile = File.createTempFile(Objects.requireNonNull(receiptDocument.getOriginalFilename()), null);
         receiptDocument.transferTo(tempFile);
@@ -109,5 +104,25 @@ public class PaymentService {
         String folderId = googleDriveService.getIdDriveFolder();
 
         return googleDriveService.uploadFile(folderId, tempFile, mimeType);
+    }
+
+    public List<PaymentResponseDTO> listByCostCenter(String costCenter){
+        List<Payment> payments = paymentRepository.findByCostCenterName(costCenter);
+        return payments.stream().map(this::toDTO).toList();
+    }
+
+    public List<PaymentResponseDTO> listBySupplier(String supplier){
+        List<Payment> payments = paymentRepository.findBySupplierName(supplier);
+        return payments.stream().map(this::toDTO).toList();
+    }
+
+    public List<PaymentResponseDTO> listByDateRange(LocalDate startDate, LocalDate endDate){
+        List<Payment> payments = paymentRepository.findByDatePaymentBetween(startDate, endDate);
+        return payments.stream().map(this::toDTO).toList();
+    }
+
+    public List<PaymentResponseDTO> listByPaymentAmountRange(Double min, Double max){
+        List<Payment> payments = paymentRepository.findByPaymentAmountBetween(min, max);
+        return payments.stream().map(this::toDTO).toList();
     }
 }
