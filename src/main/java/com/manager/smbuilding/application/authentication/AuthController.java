@@ -4,8 +4,8 @@ import com.manager.smbuilding.application.dto.request.LoginRequestDTO;
 import com.manager.smbuilding.application.dto.request.RegisterRequestDTO;
 import com.manager.smbuilding.application.dto.response.LoginResponseDTO;
 import com.manager.smbuilding.application.exception.InvalidCredentialsException;
+import com.manager.smbuilding.application.exception.ResourceNotFoundException;
 import com.manager.smbuilding.application.exception.UserAlreadyExistsException;
-import com.manager.smbuilding.application.exception.UserNotFoundException;
 import com.manager.smbuilding.domain.model.Role;
 import com.manager.smbuilding.domain.model.User;
 import com.manager.smbuilding.domain.repository.RoleRepository;
@@ -40,7 +40,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO body) {
         User user = this.userRepository.findByEmail(body.email())
-                .orElseThrow(() -> new UserNotFoundException("User not found. Check email and password or register a new user."));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found. Check email and password or register a new user."));
 
         if (!passwordEncoder.matches(body.password(), user.getPassword())) {
             throw new InvalidCredentialsException("Incorrect email or password");
@@ -62,7 +62,6 @@ public class AuthController {
             throw new UserAlreadyExistsException("CPF already registered. Please log in or recover your password.");
         }
 
-        // User creation
         User newUser = new User();
         newUser.setName(body.name());
         newUser.setEmail(body.email());
@@ -71,14 +70,12 @@ public class AuthController {
         newUser.setApartment(body.apartment());
         newUser.setPassword(passwordEncoder.encode(body.password()));
 
-        // Assigns the role "RESIDENT" by default
         Role defaultRole = roleRepository.findByRoleName("RESIDENT")
-                .orElseThrow(() -> new RuntimeException("Role 'RESIDENT' não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Role 'RESIDENT' not found."));
         newUser.addRole(defaultRole);
 
-        // Salva o usuário
         userRepository.save(newUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Usuário criado com sucesso!"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User successfully registered"));
     }
 
 

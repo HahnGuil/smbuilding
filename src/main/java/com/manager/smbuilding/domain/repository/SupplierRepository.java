@@ -27,7 +27,4 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     @Query("SELECT s.name AS name, s.cnpj AS cnpj FROM Supplier s WHERE s.id = :id")
     Optional<SupplierNameAndCnpjProjection> findSupplierNameAndCnpjById(@Param("id") Long id);
 
-    @Query("SELECT s.name FROM Supplier s WHERE s.id = :id")
-    Optional<Supplier> findSupplierById(@Param("id") Long id);
-
 }

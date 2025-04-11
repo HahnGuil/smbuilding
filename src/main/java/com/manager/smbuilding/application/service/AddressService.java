@@ -1,9 +1,9 @@
 package com.manager.smbuilding.application.service;
 
 import com.manager.smbuilding.application.dto.request.SupplierRequestDTO;
+import com.manager.smbuilding.application.exception.ResourceNotFoundException;
 import com.manager.smbuilding.domain.model.Address;
 import com.manager.smbuilding.domain.repository.AddressRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class AddressService {
 
     public void updateAddress(Long id, SupplierRequestDTO data) {
         Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found for id " + id));
 
         address.setUf(data.uf());
         address.setCity(data.city());

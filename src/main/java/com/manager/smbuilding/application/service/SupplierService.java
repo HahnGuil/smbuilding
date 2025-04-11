@@ -2,14 +2,13 @@ package com.manager.smbuilding.application.service;
 
 import com.manager.smbuilding.application.dto.request.SupplierRequestDTO;
 import com.manager.smbuilding.application.dto.response.SupplierResponseDTO;
+import com.manager.smbuilding.application.exception.ResourceNotFoundException;
 import com.manager.smbuilding.domain.model.Address;
-import com.manager.smbuilding.domain.model.CostCenter;
 import com.manager.smbuilding.domain.model.Supplier;
 import com.manager.smbuilding.domain.repository.SupplierRepository;
 import com.manager.smbuilding.infrastructure.persistence.projection.SupplierAddressProjection;
 import com.manager.smbuilding.infrastructure.persistence.projection.SupplierNameAndCnpjProjection;
 import com.manager.smbuilding.presentation.mapper.SupplierMapper;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class SupplierService {
 
     public SupplierResponseDTO updateSupplier(Long id, SupplierRequestDTO data) {
         Supplier existingSupplier = supplierRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Fornecedor não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Supplier not found for id " + id));
 
         supplierMapper.updateEntity(existingSupplier, data);
 
@@ -90,14 +89,9 @@ public class SupplierService {
         return supplierRepository.findSupplierNameAndCnpjById(id);
     }
 
-    public Supplier getSupplier(Long supplierId) {
-        return supplierRepository.findSupplierById(supplierId)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
-    }
-
     public Supplier findById(Long id) {
         return supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Supplier not found for id " + id));
     }
 
 

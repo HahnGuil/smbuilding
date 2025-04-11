@@ -1,18 +1,15 @@
 package com.manager.smbuilding.application.service;
 
+import com.manager.smbuilding.application.exception.AccessDinedException;
+import com.manager.smbuilding.application.exception.ResourceNotFoundException;
 import com.manager.smbuilding.domain.model.Role;
 import com.manager.smbuilding.domain.model.User;
 import com.manager.smbuilding.domain.repository.RoleRepository;
 import com.manager.smbuilding.domain.repository.UserRepository;
-import jakarta.persistence.Table;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.UUID;
 
 @Service
@@ -30,26 +27,17 @@ public class UserService {
     @Transactional
     public void assignRoleToUser(UUID userId, String roleName) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        // Evita remover as roles do próprio ADMIN, caso o usuário com a role ADMIN esteja fazendo a requisição
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         if (roleName.equals("ADMIN")) {
-            throw new RuntimeException("Não é permitido modificar a role ADMIN diretamente.");
+            throw new AccessDinedException("You do not have access to modify the Role");
         }
 
-
-
-        // Obtém a role nova que será atribuída ao usuário
         Role role = roleRepository.findByRoleName(roleName)
-                .orElseThrow(() -> new RuntimeException("Role não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
-        // Limpa as roles do usuário alvo
         user.getRoles().clear();
-
-        // Adiciona a nova role
         user.getRoles().add(role);
 
-        // Salva as alterações
         userRepository.save(user);
     }
 

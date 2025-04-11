@@ -1,5 +1,6 @@
 package com.manager.smbuilding.application.service;
 
+import com.manager.smbuilding.application.exception.ResourceNotFoundException;
 import com.manager.smbuilding.domain.model.CostCenter;
 import com.manager.smbuilding.domain.repository.CostCenterRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class CenterCostService {
 
     public CostCenter findById(Long id) {
         return costCenterRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cost center not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cost center not found"));
     }
 
 

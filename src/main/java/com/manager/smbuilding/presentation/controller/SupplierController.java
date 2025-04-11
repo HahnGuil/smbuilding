@@ -3,7 +3,6 @@ package com.manager.smbuilding.presentation.controller;
 import com.manager.smbuilding.application.dto.request.SupplierRequestDTO;
 import com.manager.smbuilding.application.dto.response.ErrorResponseDTO;
 import com.manager.smbuilding.application.dto.response.SupplierResponseDTO;
-import com.manager.smbuilding.application.service.AddressService;
 import com.manager.smbuilding.application.service.SupplierService;
 import com.manager.smbuilding.domain.model.Supplier;
 import com.manager.smbuilding.infrastructure.persistence.projection.SupplierNameAndCnpjProjection;
@@ -24,7 +23,7 @@ public class SupplierController {
     private final SupplierService supplierService;
     private final SupplierMapper supplierMapper;
 
-    public SupplierController(SupplierService supplierService, SupplierMapper supplierMapper, AddressService addressService) {
+    public SupplierController(SupplierService supplierService, SupplierMapper supplierMapper) {
         this.supplierService = supplierService;
         this.supplierMapper = supplierMapper;
     }
@@ -53,8 +52,6 @@ public class SupplierController {
                     .body(new ErrorResponseDTO("An unexpected error has occurred"));
         }
     }
-
-
 
     @GetMapping("/suppliers")
     public ResponseEntity<?> getSuppliersByName(

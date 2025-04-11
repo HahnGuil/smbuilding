@@ -2,16 +2,13 @@ package com.manager.smbuilding.infrastructure.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.manager.smbuilding.domain.model.User;
 import com.manager.smbuilding.domain.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,13 +25,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 
 
     private final TokenService tokenService;
-    private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public SecurityFilter(TokenService tokenService, UserRepository userRepository, UserDetailsService userDetailsService) {
+    public SecurityFilter(TokenService tokenService, UserDetailsService userDetailsService) {
         this.tokenService = tokenService;
-        this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
     }
 

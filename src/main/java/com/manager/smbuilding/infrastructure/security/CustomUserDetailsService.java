@@ -2,7 +2,6 @@ package com.manager.smbuilding.infrastructure.security;
 
 import com.manager.smbuilding.domain.model.User;
 import com.manager.smbuilding.domain.repository.UserRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

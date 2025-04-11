@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
-    public Optional<Address> findSupplierById(Long id);
+    Optional<Address> findSupplierById(Long id);
 
 
 

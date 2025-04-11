@@ -2,6 +2,9 @@ package com.manager.smbuilding.application.service;
 
 import com.manager.smbuilding.application.dto.request.PaymentRequestDTO;
 import com.manager.smbuilding.application.dto.response.PaymentResponseDTO;
+import com.manager.smbuilding.application.exception.FileDeletionException;
+import com.manager.smbuilding.application.exception.ResourceNotFoundException;
+import com.manager.smbuilding.application.utils.ValidationUtils;
 import com.manager.smbuilding.domain.model.Payment;
 import com.manager.smbuilding.domain.model.enums.DocumentType;
 import com.manager.smbuilding.domain.repository.PaymentRepository;
@@ -44,7 +47,7 @@ public class PaymentService {
     public Payment updatePayment(UUID id, PaymentRequestDTO paymentRequestDTO) throws IOException {
 
         Payment updatePayment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found"));
 
         String newLinkUploadReceiptDocument = handleReceiptDocumentUpdate(updatePayment, paymentRequestDTO.receiptDocument());
         toEntity(paymentRequestDTO, updatePayment, newLinkUploadReceiptDocument);
@@ -75,7 +78,6 @@ public class PaymentService {
         );
     }
 
-
     protected String handleReceiptDocumentUpdate(Payment updatePayment, MultipartFile receiptDocument) throws IOException {
         String newLinkUploadReceiptDocument;
 
@@ -92,7 +94,7 @@ public class PaymentService {
     protected void deleteReceiptDocument(String receiptDocument) throws IOException {
         boolean isDeleted = googleDriveService.deleteFileByLink(receiptDocument);
         if (!isDeleted) {
-            throw new IOException("Failed to delete the file with the given link: " + receiptDocument);
+            throw new FileDeletionException("Failed to delete the file with the given link: " + receiptDocument);
         }
     }
 
@@ -107,22 +109,28 @@ public class PaymentService {
     }
 
     public List<PaymentResponseDTO> listByCostCenter(String costCenter){
-        List<Payment> payments = paymentRepository.findByCostCenterName(costCenter);
+        List<Payment> payments = ValidationUtils.validateNonEmptyList(
+                paymentRepository.findByCostCenterName(costCenter),
+                "No payments found for cost center: " + costCenter
+        );
         return payments.stream().map(this::toDTO).toList();
     }
 
     public List<PaymentResponseDTO> listBySupplier(String supplier){
-        List<Payment> payments = paymentRepository.findBySupplierName(supplier);
+        List<Payment> payments = ValidationUtils.validateNonEmptyList(
+                paymentRepository.findBySupplierName(supplier), "No payments found for supplier: " + supplier
+        );
         return payments.stream().map(this::toDTO).toList();
     }
 
     public List<PaymentResponseDTO> listByDateRange(LocalDate startDate, LocalDate endDate){
-        List<Payment> payments = paymentRepository.findByDatePaymentBetween(startDate, endDate);
+        List<Payment> payments = ValidationUtils.validateNonEmptyList(paymentRepository.findByDatePaymentBetween(startDate, endDate), "No payments found for start date: " + startDate + " and end date: " + endDate);
         return payments.stream().map(this::toDTO).toList();
     }
 
     public List<PaymentResponseDTO> listByPaymentAmountRange(Double min, Double max){
-        List<Payment> payments = paymentRepository.findByPaymentAmountBetween(min, max);
+        List<Payment> payments = ValidationUtils.validateNonEmptyList(paymentRepository.findByPaymentAmountBetween(min, max), "No payments found for min/max: " + min + " and max: " + max);
         return payments.stream().map(this::toDTO).toList();
     }
+
 }
